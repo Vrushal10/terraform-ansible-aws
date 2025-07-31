@@ -1,0 +1,30 @@
+---
+- name: Configure Web Server
+  hosts: aws_ec2
+  become: true
+  #gather_facts: false
+
+  tasks:
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+    
+    - name: Enable and Start nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Create custom index.html
+      ansible.builtin.copy:
+        content: "<h1>Hello from Ansible Nginx!</h1>"
+        dest: /usr/share/nginx/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
